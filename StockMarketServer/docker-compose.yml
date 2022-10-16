@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:    
+  mainoutsiderservice:
+    build:
+      context: .
+      dockerfile: ./MainOutsiderService/docker/dockerfile
+      
+
+    ports:
+      - "5000:5000"
+      - "5002:5002"
+    environment:
+      "Ports:Http1": "5000"
+      "Ports:Http2": "5002"
+    networks:
+      - netfront
+  
+  # testconsole:
+  #  build:
+  #   context: .
+  #   dockerfile: ./test1/docker/dockerfile
+
+
+networks:
+    netfront:
+        # use the bridge driver, but enable IPv6
+        driver: bridge
+        driver_opts:
+            com.docker.network.enable_ipv6: "true"

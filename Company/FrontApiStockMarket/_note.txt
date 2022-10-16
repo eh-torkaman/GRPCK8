@@ -1,0 +1,6 @@
+dapr run  --app-id FrontApiStockMarket  --app-port 5006 --dapr-http-port 3602  -- dotnet run --urls http://localhost:5006
+
+
+https://docs.dapr.io/developing-applications/building-blocks/service-invocation/howto-invoke-discover-services/
+--dapr-grpc-port 60002
+

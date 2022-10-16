@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+option csharp_namespace = "SharedData.proto";
+
+package stockItems;
+
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+message StockItem{
+	      int32  Id =1;
+          string Name =2;
+          string Description =3;
+          double InitPrice =4;
+          double FinalPrice =5;
+          google.protobuf.Timestamp UpdateTime =6;
+}
+
+
+
+service StockItems {
+  rpc GetAllStockItem (AllStockItemRequest) returns (AllStockItemReply);
+
+
+   rpc GetStockItemsCurrentPrice (StockItemsCurrentPriceRequest) returns (stream StockItemsCurrentPriceReply);
+}
+
+message AllStockItemRequest {}
+
+message AllStockItemReply {
+  repeated  StockItem stockItems = 1;
+}
+
+
+message StockItemsCurrentPriceRequest {
+  string name = 1;
+}
+message StockItemsCurrentPriceReply {
+  repeated  StockItemCurrentPrice StockItemsCurrentPrice = 1;
+}
+
+   message   StockItemCurrentPrice
+    {
+          int32 Id =1;
+          double CurrentPrice=2;
+          double FinalPrice =3;
+          double PriceChangePercentage =4;
+          google.protobuf.Timestamp UpdateTime =5;
+    }
+

@@ -1,0 +1,1 @@
+dapr run --app-id FetchDataServerConsoleApp  -- dotnet run

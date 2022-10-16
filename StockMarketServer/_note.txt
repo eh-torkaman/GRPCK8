@@ -1,0 +1,7 @@
+docker build -f ./MainOutsiderService/docker/dockerfile . -t my-registry:55000/mainoutsiderservice:0
+
+docker run -p 5002:5002 -p 5000:5000 -it  -e Ports:Http1=5002 -e  Ports:Http2=5000 my-registry:55000/mainoutsiderservice:0
+
+
+docker build -f ./test1/docker/dockerfile -t test1cons .
+docker run --rm -it --network big_netfront test1cons   

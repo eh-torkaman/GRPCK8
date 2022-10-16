@@ -1,0 +1,36 @@
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+
+WORKDIR /root/.nuget/packages
+COPY ./.MyCache .
+RUN dotnet nuget add source /root/.nuget/packages
+RUN  dotnet nuget locals global-packages -l
+
+
+
+
+WORKDIR /app/ProtoBufGeneratedClasses
+COPY ./ProtoBufGeneratedClasses/ProtoBufGeneratedClasses.csproj .
+RUN dotnet restore "ProtoBufGeneratedClasses.csproj"
+
+WORKDIR /app/FetchDataServerConsoleApp
+COPY ./FetchDataServerConsoleApp/FetchDataServerConsoleApp.csproj .
+RUN dotnet restore "FetchDataServerConsoleApp.csproj"
+
+
+WORKDIR /app/ProtoBufGeneratedClasses
+COPY ./ProtoBufGeneratedClasses/. .
+
+WORKDIR /app/FetchDataServerConsoleApp
+COPY ./FetchDataServerConsoleApp/. .
+#
+#WORKDIR /app
+#COPY . .
+
+
+WORKDIR "/app/FetchDataServerConsoleApp"
+RUN dotnet publish "FetchDataServerConsoleApp.csproj" -c Release -o /app/out
+
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+WORKDIR /app
+COPY --from=build-env /app/out .
+ENTRYPOINT ["dotnet", "FetchDataServerConsoleApp.dll"]

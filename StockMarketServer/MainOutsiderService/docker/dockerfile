@@ -1,0 +1,39 @@
+#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+
+FROM my-registry:55000/mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+EXPOSE 5000
+EXPOSE 5002
+FROM my-registry:55000/mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+
+COPY ["./SharedData/SharedData.csproj", "SharedData/"]
+
+RUN dotnet restore "SharedData/SharedData.csproj"
+
+
+COPY ["./MainOutsiderService/MainServer.csproj", "MainOutsiderService/"]
+
+RUN dotnet restore "MainOutsiderService/MainServer.csproj"
+
+
+COPY . .
+WORKDIR "/src/MainOutsiderService"
+RUN dotnet build "MainServer.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "MainServer.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+FROM base AS final
+
+WORKDIR /SharedData/Protos
+COPY --from=publish /src/SharedData/Protos .
+
+WORKDIR /app
+COPY --from=publish /app/publish .
+
+
+
+ENTRYPOINT ["dotnet", "MainServer.dll"]
