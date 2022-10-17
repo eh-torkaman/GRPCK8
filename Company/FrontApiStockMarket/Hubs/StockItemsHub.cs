@@ -8,7 +8,7 @@ namespace FrontApiStockMarket.Hubs
     public interface IStockItemsHub
     {
         public Task SendMessage(string user, string message);
-        public Task SendStockItems(List<StockItemCurrentPrice> StockItems);
+        public Task SendStockItemCurrentPrice(List<StockItemCurrentPrice> StockItems);
     }
 
     public class StockItemsHub : Hub< IStockItemsHub>
@@ -18,9 +18,9 @@ namespace FrontApiStockMarket.Hubs
             await Clients.All.SendMessage(user, message);
         }
 
-        public async Task SendStockItems(List<StockItemCurrentPrice> SendStockItems)
+        public async Task SendStockItemCurrentPrice(List<StockItemCurrentPrice> SendStockItems)
         {
-            await Clients.All.SendStockItems(SendStockItems);
+            await Clients.All.SendStockItemCurrentPrice(SendStockItems);
         }
 
     }

@@ -12,15 +12,14 @@ namespace FetchDataServerConsoleApp
     {
         IConnection connection;
         IModel channel;
-        string exchaneName = "exchaneName";
+        string exchaneName = "Stocks";
         public RabbitMqManager()
         {
             var factory = new ConnectionFactory();
             factory.Uri = new Uri("amqp://guest:guest@localhost:5672");
             connection = factory.CreateConnection();
             channel = connection.CreateModel();
-            channel.ExchangeDeclare(exchaneName, ExchangeType.Fanout, true);
-            this.SendMessage("i'm Up");
+            channel.ExchangeDeclare(exchaneName, ExchangeType.Topic, true);
         }
 
         public void Dispose()
@@ -39,8 +38,13 @@ namespace FetchDataServerConsoleApp
         {
             var rs = System.Text.Json.JsonSerializer.Serialize(stockItem);
             var byteBody = System.Text.Encoding.UTF8.GetBytes(rs);
-            channel.BasicPublish(exchaneName, "", body: byteBody);
+            channel.BasicPublish(exchaneName, "StockItems", body: byteBody);
         }
-
+        public void SendStockItemCurrentPrice(List<StockItemCurrentPrice> stockItemCurrentPrices)
+        {
+            var rs = System.Text.Json.JsonSerializer.Serialize(stockItemCurrentPrices);
+            var byteBody = System.Text.Encoding.UTF8.GetBytes(rs);
+            channel.BasicPublish(exchaneName, "stockItemCurrentPrices", body: byteBody);
+        }
     }
 }

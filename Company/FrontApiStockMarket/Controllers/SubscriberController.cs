@@ -4,7 +4,6 @@ using Google.Protobuf.Collections;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using ProtoBufGeneratedClasses.Messages;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -35,24 +34,7 @@ namespace FrontApiStockMarket.Controllers
             await this.hubContext.Clients.All.SendMessage("a", "b");
         }
 
-
-        //List<global::SharedData.proto.StockItemCurrentPrice>
-        [Topic("pubsub", "CurrentPrice")]
-
-        public async Task<IActionResult> ReadPubSubCurrentPrice(/*[FromBody] */StockItemsMessage data)
-        {
-            logger.LogInformation(data.stockItemCurrentPrice.First().Id.ToString());
-            string jsonString = "";
-            try { jsonString = JsonSerializer.Serialize(data.stockItemCurrentPrice); }
-            catch (Exception ee) { jsonString = ee.Message; }
-            logger.LogInformation(" CurrentPrice => recieved \n\n " + jsonString);
-            await this.hubContext.Clients.All.SendStockItems(data.stockItemCurrentPrice);
-            await Task.Delay(2000);
-            return Ok();
-        }
-
         
 
-        public record Order([property: JsonPropertyName("data")] string data);
     }
 }

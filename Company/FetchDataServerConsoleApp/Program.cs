@@ -21,14 +21,12 @@ namespace FetchDataServerConsoleApp
             IServiceProvider provider = serviceScope.ServiceProvider;
 
             var hostApplicationLifetime = provider.GetRequiredService<IHostApplicationLifetime>();
-            hostApplicationLifetime.ApplicationStarted.Register(() => { provider.GetRequiredService<FetchDataService>().FetchData(); });
-
-            //////////////////
-            ///   
-
-            //
-            //////////////
-
+            hostApplicationLifetime.ApplicationStarted.Register(() =>
+            {
+                var fetchService = provider.GetRequiredService<FetchDataService>();
+                fetchService.FetchStockItemsCurrentPrice();
+                fetchService.FetchStockItems();
+            });
             host.Run();
         }
         static IHostBuilder CreateDefaultBuilder()
