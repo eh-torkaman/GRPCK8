@@ -61,7 +61,7 @@ namespace FrontApiStockMarket
                 this.hubContext.Clients.All.SendStockItemCurrentPrice(stockItemCurrentPrice);
             }
         }
-
+        public List<StockItem> stockItems ;
         private void readStockItem(BasicDeliverEventArgs eventArg)
         {
             List<StockItem> stockItems = new List<StockItem>();
@@ -70,8 +70,9 @@ namespace FrontApiStockMarket
                 stockItems = System.Text.Json.JsonSerializer.Deserialize<List<StockItem>>(jsonText) ?? new List<StockItem>();
             if (stockItems != null)
             {
+                this.stockItems = stockItems;
                 logger.LogWarning("routingKeyStockItems Count: " + stockItems.Count().ToString());
-                this.hubContext.Clients.All.SendStockItems(stockItems);
+               // this.hubContext.Clients.All.SendStockItems(stockItems);
             }
         }
         private void Consumer_Received(object? sender, BasicDeliverEventArgs eventArg)

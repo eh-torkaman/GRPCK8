@@ -4,6 +4,7 @@ using Google.Protobuf.Collections;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using SharedData.proto;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -34,7 +35,11 @@ namespace FrontApiStockMarket.Controllers
             await this.hubContext.Clients.All.SendMessage("a", "b");
         }
 
-        
+        [HttpGet("allStockItems")]
+        public  ActionResult<List<StockItem>>  getStockItems()
+        {
+            return Ok( this.rabbitMqManager.stockItems);
+        }
 
     }
 }

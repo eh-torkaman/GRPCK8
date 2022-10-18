@@ -12,4 +12,19 @@
 
     </div>
     <p>This component demonstrates fetching data from the server.</p>
+
+  
 </ng-container>
+
+<ag-grid-angular
+style="width: 100%; height: 100%;"
+class="ag-theme-alpine"
+[columnDefs]="columnDefs"
+[defaultColDef]="defaultColDef"
+[rowData]="rowData$ | async"
+[rowSelection]="'multiple'"
+[animateRows]="true"
+(gridReady)="onGridReady($event)"
+(cellClicked)="onCellClicked($event)"
+[getRowId]="getRowId"
+></ag-grid-angular>
