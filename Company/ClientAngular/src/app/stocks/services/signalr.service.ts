@@ -87,7 +87,7 @@ export class SignalrService {
               priceChangePercentage: 0,
               currentPrice: 0,
             };
-        })
+            this.stockItemsAndCurrentPrice$.next(JSON.parse( JSON.stringify( Object.values(this.stockItemsAndCurrentPriceDict)))); })
       )
       .subscribe((rs) => this.stockItems$.next(rs));
   }

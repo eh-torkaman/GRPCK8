@@ -70,9 +70,7 @@ export class AppComponent implements OnDestroy {
     // return ( time.toDate().toLocaleString()        );
   };
   getDate(params: ValueGetterParams<StockItemsAndCurrentPrice>) {
-    let updateTime = params.data?.updateTime ?? { seconds: 0, nanos: 0 };
-    console.log('updateTime', updateTime);
-    return this.TimeStampToDate(updateTime);
+    return this.TimeStampToDate(params.data?.updateTime ?? { seconds: 0, nanos: 0 });
   }
 
   // Data that gets displayed in the grid
