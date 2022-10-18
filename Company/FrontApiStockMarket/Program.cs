@@ -1,5 +1,6 @@
 using FrontApiStockMarket.Hubs;
 using Google.Api;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
 namespace FrontApiStockMarket
@@ -38,10 +39,18 @@ namespace FrontApiStockMarket
 
             app.Lifetime.ApplicationStarted.Register(() =>
             {
-
             });
 
-           // var r = new RabbitMqManager();
+
+            using IServiceScope serviceScope = app.Services.CreateScope();
+            IServiceProvider provider = serviceScope.ServiceProvider;
+            var hostApplicationLifetime = provider.GetRequiredService<IHostApplicationLifetime>();
+            hostApplicationLifetime.ApplicationStarted.Register(() =>
+            {
+                var rabbitMqManager = provider.GetRequiredService<RabbitMqManager>();
+                 
+            });
+            // var r = new RabbitMqManager();
             app.Run();
         }
 

@@ -8,10 +8,11 @@ namespace FrontApiStockMarket.Hubs
     public interface IStockItemsHub
     {
         public Task SendMessage(string user, string message);
-        public Task SendStockItemCurrentPrice(List<StockItemCurrentPrice> StockItems);
+        public Task SendStockItemCurrentPrice(List<StockItemCurrentPrice> stockItemCurrentPrice);
+        public Task SendStockItems(List<StockItem> stockItems);
     }
 
-    public class StockItemsHub : Hub< IStockItemsHub>
+    public class StockItemsHub : Hub< IStockItemsHub>, IStockItemsHub
     {
         public async Task SendMessage(string user, string message)
         {
@@ -22,7 +23,10 @@ namespace FrontApiStockMarket.Hubs
         {
             await Clients.All.SendStockItemCurrentPrice(SendStockItems);
         }
-
+        public async Task SendStockItems(List<StockItem> StockItems)
+        {
+            await Clients.All.SendStockItems(StockItems);
+        }
     }
 
 }

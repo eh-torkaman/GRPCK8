@@ -46,33 +46,44 @@ namespace FrontApiStockMarket
         {
             this.hubContext = hubContext;
             this.logger = logger;
-           
+
             connectToRabit();
         }
+        private void readStockItemCurrentPrices(BasicDeliverEventArgs eventArg)
+        {
+            List<StockItemCurrentPrice> stockItemCurrentPrice = new List<StockItemCurrentPrice>();
+            var jsonText = System.Text.Encoding.UTF8.GetString(eventArg.Body.ToArray());
+            if (jsonText != null)
+                stockItemCurrentPrice = System.Text.Json.JsonSerializer.Deserialize<List<StockItemCurrentPrice>>(jsonText) ?? new List<StockItemCurrentPrice>();
+            if (stockItemCurrentPrice != null)
+            {
+                logger.LogWarning("StockItemCurrentPrice Count: " + stockItemCurrentPrice.Count().ToString());
+                this.hubContext.Clients.All.SendStockItemCurrentPrice(stockItemCurrentPrice);
+            }
+        }
 
+        private void readStockItem(BasicDeliverEventArgs eventArg)
+        {
+            List<StockItem> stockItems = new List<StockItem>();
+            var jsonText = System.Text.Encoding.UTF8.GetString(eventArg.Body.ToArray());
+            if (jsonText != null)
+                stockItems = System.Text.Json.JsonSerializer.Deserialize<List<StockItem>>(jsonText) ?? new List<StockItem>();
+            if (stockItems != null)
+            {
+                logger.LogWarning("routingKeyStockItems Count: " + stockItems.Count().ToString());
+                this.hubContext.Clients.All.SendStockItems(stockItems);
+            }
+        }
         private void Consumer_Received(object? sender, BasicDeliverEventArgs eventArg)
         {
             //logger.LogError(eventArg.RoutingKey);
             if (eventArg.RoutingKey == routingKeystockItemCurrentPrices)
             {
-                List<StockItemCurrentPrice> stockItem = new List<StockItemCurrentPrice>();
-                var jsonText = System.Text.Encoding.UTF8.GetString(eventArg.Body.ToArray());
-                if (jsonText != null)
-                    stockItem = System.Text.Json.JsonSerializer.Deserialize<List<StockItemCurrentPrice>>(jsonText) ?? new List<StockItemCurrentPrice>();
-                if (stockItem != null)
-                {
-                    logger.LogWarning("StockItemCurrentPrice Count: " + stockItem.Count().ToString());
-                    this.hubContext.Clients.All.SendStockItemCurrentPrice(stockItem);
-                }
+                readStockItemCurrentPrices(eventArg);
             }
             if (eventArg.RoutingKey == routingKeyStockItems)
             {
-                List<StockItem> stockItem = new List<StockItem>();
-                var jsonText = System.Text.Encoding.UTF8.GetString(eventArg.Body.ToArray());
-                if (jsonText != null)
-                    stockItem = System.Text.Json.JsonSerializer.Deserialize<List<StockItem>>(jsonText) ?? new List<StockItem>();
-                if (stockItem != null)
-                    logger.LogWarning("routingKeyStockItems Count: " + stockItem.Count().ToString());
+                readStockItem(eventArg);
             }
 
         }
