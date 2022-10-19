@@ -4,6 +4,7 @@ import { StockMarketViewComponent } from './stock-market-view/stock-market-view.
 import { AgGridModule } from 'ag-grid-angular';
 import { SignalrService } from './services/signalr.service';
 import { StocksRoutingModule } from './stocke-routing.module';
+import { ConfigActivator } from './services/config-actovator.service';
 
 
 
@@ -15,6 +16,6 @@ import { StocksRoutingModule } from './stocke-routing.module';
     CommonModule,AgGridModule,StocksRoutingModule
   ],
   exports:[StockMarketViewComponent],
-  providers:[SignalrService]
+  providers:[SignalrService,ConfigActivator]
 })
 export class StocksModule { }

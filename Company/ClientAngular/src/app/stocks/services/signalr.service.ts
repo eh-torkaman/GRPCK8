@@ -25,7 +25,9 @@ export class SignalrService {
   public stockItemsAndCurrentPrice$ = new BehaviorSubject<
     StockItemsAndCurrentPrice[]
   >([]);
-
+public close(){
+  this.hubConnection.stop().then(()=>{console.log("connection closed")})
+}
   private hubConnection!: signalR.HubConnection;
   public startConnection = () => {
     this.hubConnection = new signalR.HubConnectionBuilder()
