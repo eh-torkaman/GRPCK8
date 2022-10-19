@@ -8,9 +8,7 @@ import {
 import { environment } from 'src/environments/environment';
 import { BehaviorSubject, combineLatest, map, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class SignalrService {
   /**
    *
@@ -73,7 +71,7 @@ export class SignalrService {
   }
 
 
-  public start() {
+  public getAllStockItems() {
     this.http
       .get<StockItems[]>(
         `${environment.stockServerUrl}/api/Subscriber/allStockItems`

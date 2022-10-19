@@ -14,7 +14,7 @@ namespace SharedData.Generators
         }
         private static List<StockItem> _items { get; set; }
 
-        private static int ItemsCount = 20;
+        private static int ItemsCount = 200;
         public static List<StockItem> GetStockItems()
         {
             if (_items == null)

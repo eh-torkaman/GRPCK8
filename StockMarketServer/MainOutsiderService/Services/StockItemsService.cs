@@ -40,9 +40,9 @@ namespace MainOutsiderService.Services
         {
             _logger.LogInformation("entering GetStockItemsCurrentPrice");
 
-            var writeAStockItemCurrentPriceToSream = () =>
+            var writeAStockItemCurrentPriceToSream = async () =>
 
-                    Task.Run(async () =>
+                 await   Task.Run(async () =>
                   {
                       if (!context.CancellationToken.IsCancellationRequested)
                       {
@@ -66,7 +66,7 @@ namespace MainOutsiderService.Services
             while (!context.CancellationToken.IsCancellationRequested)
             {
                 await writeAStockItemCurrentPriceToSream();
-                await Task.Delay(10000, context.CancellationToken);
+                await Task.Delay(500, context.CancellationToken);
             }
 
         }

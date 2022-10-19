@@ -35,6 +35,7 @@ namespace FetchDataServerConsoleApp
 
         public async void FetchStockItemsCurrentPrice()
         {
+            this.logger.LogInformation("FetchStockItemsCurrentPrice");
             using var channel = GrpcChannel.ForAddress(serverAdress, new GrpcChannelOptions() { });
             var _client = new StockItems.StockItemsClient(channel);
             var stockItemsCurrentPriceReply = _client.GetStockItemsCurrentPrice(new StockItemsCurrentPriceRequest());
@@ -52,6 +53,7 @@ namespace FetchDataServerConsoleApp
 
         public async void FetchStockItems()
         {
+            this.logger.LogInformation("FetchStockItems");
             using var channel = GrpcChannel.ForAddress(serverAdress, new GrpcChannelOptions() { });
             var _client = new StockItems.StockItemsClient(channel);
             while (true)
@@ -63,7 +65,7 @@ namespace FetchDataServerConsoleApp
                     logger.LogInformation("stockItemsReply.StockItems published");
                 }
                 catch (Exception err) { logger.LogError(exception: err, " Err"); }
-                await Task.Delay(5000);
+                await Task.Delay(35*1000);
             }
         }
     }
