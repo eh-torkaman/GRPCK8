@@ -13,13 +13,30 @@ namespace FetchDataServerConsoleApp
         IConnection connection;
         IModel channel;
         string exchaneName = "Stocks";
+        string streamStocks = "stockItems-stream";
+        string routingKeyStockItems = "StockItems";
         public RabbitMqManager()
         {
             var factory = new ConnectionFactory();
             factory.Uri = new Uri("amqp://guest:guest@localhost:5672");
             connection = factory.CreateConnection();
+
             channel = connection.CreateModel();
             channel.ExchangeDeclare(exchaneName, ExchangeType.Topic, true);
+            var streamParams = new Dictionary<string, object>();
+            streamParams["x-queue-type"] = "stream";
+            streamParams["x-max-length-bytes"] = 10_000_000;// maximum stream size: 10 Mb
+            streamParams["x-stream-max-segment-size-bytes"] = 1_000_000;
+
+           var stockItems_stream= channel.QueueDeclare(streamStocks,
+                                  true,         // durable
+                                  false, false, // not exclusive, not auto-delete
+                                  streamParams
+                                );
+
+            channel.QueueBind(streamStocks, exchaneName, routingKeyStockItems);
+
+
         }
 
         public void Dispose()
@@ -34,7 +51,7 @@ namespace FetchDataServerConsoleApp
             channel.BasicPublish(exchaneName, "", body: byteBody);
         }
 
-        public void SendStockItems(List<StockItem> stockItem )
+        public void SendStockItems(List<StockItem> stockItem)
         {
             var rs = System.Text.Json.JsonSerializer.Serialize(stockItem);
             var byteBody = System.Text.Encoding.UTF8.GetBytes(rs);
